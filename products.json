@@ -1,0 +1,11 @@
+[
+  {
+    "id": "9bc7a7f1cb0a0d553db8",
+    "title": "producto prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "abc",
+    "stock": 25
+  }
+]
