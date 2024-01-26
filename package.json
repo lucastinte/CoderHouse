@@ -2,10 +2,12 @@
   "name": "coderhouse",
   "version": "1.0.0",
   "description": "lucas",
-  "main": "ProductManeger.js",
+  "main": "main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC"
 }
