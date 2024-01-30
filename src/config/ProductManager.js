@@ -19,16 +19,17 @@ export class ProductManager {
   }
   async getProducts() {
     const products = await this.readProducts();
-    console.log(products);
+    return products;
   }
 
   async getProductById(productId) {
     const products = await this.readProducts();
     const product = products.find((prod) => prod.id === productId);
-    if (!product) {
-      console.log("Product not found.");
+    if (product) {
+      return product;
+    } else {
+      return "Product no exists";
     }
-    console.log(product);
   }
 
   async addProduct(newProduct) {
