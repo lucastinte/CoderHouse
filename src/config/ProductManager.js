@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-
+import crypto from "crypto"
 export class ProductManager {
   constructor(path) {
     this.path = path;
@@ -25,37 +25,33 @@ export class ProductManager {
   async getProductById(productId) {
     const products = await this.readProducts();
     const product = products.find((prod) => prod.id === productId);
-    if (product) {
+    if (product) 
       return product;
-    } else {
-      return "Product no exists";
-    }
   }
 
   async addProduct(newProduct) {
     // Validación de propiedades
     if (
       !newProduct.code ||
-      !newProduct.id ||
       !newProduct.title ||
       !newProduct.description ||
       !newProduct.price ||
       !newProduct.thumbnail ||
       !newProduct.stock
     ) {
-      console.log("Debe ingresar un producto con todas las propiedades");
+      return "Debe ingresar un producto con todas las propiedades"
     }
     //Buscar producto duplicado por código
     const products = await this.readProducts();
 
     const code = products.findIndex((prod) => prod.code === newProduct.code);
     if (code === -1) {
-      //Agregado nuevo producto
+      newProduct.id=crypto.randomBytes(10).toString("hex")
       products.push(newProduct);
       await this.writeProductsToFile();
-      console.log("Product successfully added.");
+      return "Product successfully added."
     } else {
-      console.log("Product already exists.");
+      return "Product already exists."
     }
   }
 
@@ -66,9 +62,9 @@ export class ProductManager {
     if (index !== -1) {
       this.products[index] = { ...this.products[index], ...updatedFields };
       await this.writeProductsToFile();
-      console.log("Product successfully updated.");
+      return "Product successfully updated."
     } else {
-      console.log("Product not found.");
+      return "Product not found."
     }
   }
 
@@ -76,11 +72,11 @@ export class ProductManager {
     const products = await this.readProducts();
     const index = products.findIndex((prod) => prod.id === productId);
     if (index != -1) {
-      products.splice(index, 1); // Remove the product directly from the array
+      products.splice(index, 1); 
       await this.writeProductsToFile();
-      console.log("Product successfully deleted.");
+      return "Product successfully deleted."
     } else {
-      console.log("Product not found.");
+      return "Product not found."
     }
   }
 }
