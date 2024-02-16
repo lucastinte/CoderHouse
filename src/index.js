@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
   });
 });
 app.use("/static", express.static(__dirname + "/public"));
+//para que api products consulte informacion de la carpeta estatica agrego el parametro static
 app.use("/api/products", productsRouter, express.static(__dirname + "/public"));
 app.use("/api/cart", cartRouter);
 app.post("/upload", upload.single("product"), (req, res) => {
