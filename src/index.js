@@ -14,7 +14,6 @@ const server = app.listen(port, () => {
 });
 const io = new Server(server);
 app.use(express.json());
-app.use("/static", express.static(__dirname + "/public"));
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
@@ -33,8 +32,8 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("rendicion", "El jugador se rindio"); //Clientes que tengan establecida la comunicacion con el servidor
   });
 });
-
-app.use("/api/products", productsRouter);
+app.use("/static", express.static(__dirname + "/public"));
+app.use("/api/products", productsRouter, express.static(__dirname + "/public"));
 app.use("/api/cart", cartRouter);
 app.post("/upload", upload.single("product"), (req, res) => {
   try {
@@ -47,36 +46,37 @@ app.post("/upload", upload.single("product"), (req, res) => {
   }
 });
 //funciona dinamicamente pueo enviar la plantilla a renderizar y su estilo
-app.get("/static", (req, res) => {
-  const prods = [
-    {
-      id: 1,
-      title: "celular",
-      price: 1500,
-      img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
-    },
-    {
-      id: 2,
-      title: "tele",
-      price: 1800,
-      img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
-    },
-    {
-      id: 3,
-      title: "tablet",
-      price: 1200,
-      img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
-    },
-    {
-      id: 4,
-      title: "reloj",
-      price: 16500,
-      img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
-    },
-  ];
-  res.render("productos", {
-    mostrarProductos: true,
-    productos: prods,
-    css: "home.css",
-  });
-});
+
+// app.get("/static", (req, res) => {
+//   const prods = [
+//     {
+//       id: 1,
+//       title: "celular",
+//       price: 1500,
+//       img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
+//     },
+//     {
+//       id: 2,
+//       title: "tele",
+//       price: 1800,
+//       img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
+//     },
+//     {
+//       id: 3,
+//       title: "tablet",
+//       price: 1200,
+//       img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
+//     },
+//     {
+//       id: 4,
+//       title: "reloj",
+//       price: 16500,
+//       img: "https://intercompras.com/product_thumb.php?img=images/product/VORAGO_CELL-500-PL.jpg&w=380&h=320",
+//     },
+//   ];
+//   res.render("templates/productos", {
+//     mostrarProductos: true,
+//     productos: prods,
+//     css: "home.css",
+//   });
+// });

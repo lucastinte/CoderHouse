@@ -10,9 +10,18 @@ productsRouter.get("/", async (req, res) => {
     const limite = parseInt(limit);
     if (!isNaN(limite) && limite >= 0) {
       const prodsLimit = prods.slice(0, limite);
-      res.send(prodsLimit);
+      res.render("templates/home", {
+        mostrarProductos: true,
+        productos: prodsLimit,
+        css: "product.css",
+      });
     } else if (!limit) {
-      res.send(prods);
+      res.render("templates/home", {
+        
+        mostrarProductos: true,
+        productos: prods,
+        css: "product.css",
+      });
     } else {
       res.status(400).send("Error al consultar productos, Ingrese un valor valido");
     }
