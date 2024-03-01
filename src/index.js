@@ -17,7 +17,13 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server)
 
-//Middlewares
+//Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
+mongoose
+  .connect(
+    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  )
+  .then((mensasje) => console.log(mensasje))
+  .catch((error) => console.log(error));
 app.use(express.json())
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
@@ -41,6 +47,7 @@ app.use('/api/products', productsRouter, express.static(__dirname + '/public'))
 app.use('/api/cart', cartRouter)
 app.use('/api/chat', chatRouter, express.static(__dirname + '/public'))
 
+app.use("/api/users", userRouter);
 app.post('/upload', upload.single('product'), (req, res) => {
     try {
         console.log(req.file)
