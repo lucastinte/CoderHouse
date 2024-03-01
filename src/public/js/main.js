@@ -1,13 +1,34 @@
-const socket = io();
+const socket = io()
 
-socket.emit("movimiento", "Ca7");
+const chatBox = document.getElementById('chatBox')
+const messageLogs = document.getElementById('messageLogs')
+let user
 
-socket.emit("rendirse", "Me he rendido");
+Swal.fire({
+    title: "Inicio de Sesion",
+    input: "text",
+    text: "Por favor ingrese su nombre de usuario para continuar",
+    inputValidator: (valor) => {
+        return !valor && 'Ingrese un valor valido'
+    },
+    allowOutsideClick: false
+}).then(resultado => {
+    user = resultado.value
+    console.log(user)
+})
 
-socket.on("mensaje-jugador", (info) => {
-  console.log(info);
-});
+chatBox.addEventListener('change', (e) => {
 
-socket.on("rendicion", (info) => {
-  console.log(info);
-});
+    if (chatBox.value.trim().length > 0) {
+        socket.emit('mensaje', { usuario: user, mensaje: chatBox.value, hora: new Date().toLocaleString() })
+        chatBox.value = ""
+    }
+
+})
+
+socket.on('mensajeLogs', info => {
+    messageLogs.innerHTML = ""
+    info.forEach(mensaje => {
+        messageLogs.innerHTML += `<p>${mensaje.hora}hs. Usuario ${mensaje.usuario} dice: ${mensaje.mensaje}</p>`
+    })
+})
