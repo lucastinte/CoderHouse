@@ -3,9 +3,13 @@ import cartRouter from './routes/cartRouter.js'
 import productsRouter from './routes/productsRouter.js'
 import chatRouter from './routes/chatRouter.js'
 import upload from './config/multer.js'
+import mongoose from 'mongoose'
+import messageModel from './models/messages.js'
+
 import { Server } from 'socket.io'
 import { engine } from 'express-handlebars'
 import { __dirname } from './path.js'
+import userRouter from "./routes/userRoutes.js"
 
 const app = express()
 const PORT = 8080
@@ -20,7 +24,7 @@ const io = new Server(server)
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then((mensasje) => console.log(mensasje))
   .catch((error) => console.log(error));
@@ -29,14 +33,19 @@ app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views', __dirname + '/views')
 
-const mensajes = []
-io.on('connection', (socket) => {
+
+io.on('connection',  (socket) => {
     console.log("Conexion con Socket.io")
 
-    socket.on('mensaje', info => {
-        console.log(info)
-        mensajes.push(info)
-        io.emit('mensajeLogs', mensajes)
+    socket.on('mensaje', async (mensaje) => {
+        try {
+            await messageModel.create(mensaje)
+            const mensajes=await messageModel.find()
+        io.emit('mensajeLogs', mensajes) 
+        } catch (error) {
+            io.emit("mensajeLogs",error)
+        }
+     
     })
 
 })

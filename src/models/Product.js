@@ -1,12 +1,28 @@
-import crypto from "crypto";
-export class Product {
-  constructor(title, description, price, stock, code) {
-    this.title = title;
-    this.description = description;
-    this.price = price;
-    this.stock = stock;
-    this.code = code;
-    this.thumbnail = [];
-    this.id = crypto.randomBytes(10).toString("hex");
-  }
-}
+    import { Schema, model } from "mongoose";
+    const productSchema=new Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true
+    },
+    stock:{
+        type:Number,
+        required:true
+    },
+    code:{
+        type:String,
+        unique:true
+    },
+    price:{
+type:Number,
+required:true
+    },
+    thumbnail: {
+        default:[]
+    },
+    })
+    const productModel=model("products",productSchema)
+    export default productModel
