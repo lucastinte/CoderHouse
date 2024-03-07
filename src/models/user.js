@@ -16,7 +16,7 @@ const userShema = new Schema({
     type:String,
     required:true
 },
-  email: { type: String, unique: true },
+  email: { type: String, unique: true, index:true },
   rol:{
     type:String,
     default:"User"
