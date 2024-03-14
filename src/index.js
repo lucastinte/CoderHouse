@@ -23,7 +23,10 @@ mongoose
   )
   .then()
   .catch((error) => console.log(error));
-const resultado = await orderModel.paginate({}, { limit: 15 });
+const resultado = await orderModel.paginate(
+  { status: true },
+  { limit: 10, page: 1, sort: { price: "desc" } }
+);
 // const resultado = await orderModel.aggregate([
 //   { $match: { size: "medium" } },
 //   {
