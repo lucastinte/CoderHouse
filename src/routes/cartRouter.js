@@ -2,6 +2,7 @@ import { Router } from "express";
 import cartModel from "../models/cart.js";
 
 const cartRouter = Router();
+//create new cart
 cartRouter.post("/", async (req, res) => {
   try {
     const mensaje = await cartModel.create({ products: [] });
@@ -10,6 +11,7 @@ cartRouter.post("/", async (req, res) => {
     res.status(500).send(`internal error when create cart: ${error}`);
   }
 });
+//get cart by id
 cartRouter.get("/:cid", async (req, res) => {
   try {
     const cartId = req.params.cid;
@@ -23,24 +25,34 @@ cartRouter.get("/:cid", async (req, res) => {
       .send(`internal error when reading products from cart: ${error}`);
   }
 });
+//Add or update a product in the cart
 
 cartRouter.post("/:cid/:pid", async (req, res) => {
   try {
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    const { quantity } = req.body;
-    const cart = await cartModel.findById(cartId);
-    const indice = cart.products.findIndex(
-      (product) => product.id_prod == productId
+    let { quantity } = req.body;
+
+    if (quantity === undefined) {
+      quantity = 1;
+    }
+
+    const updatedCart = await cartModel.findOneAndUpdate(
+      { _id: cartId, "products.id_prod": productId },
+      { $inc: { "products.$.quantity": quantity } },
+      { new: true }
     );
 
-    if (indice != -1) {
-      cart.products[indice].quantity = quantity;
+    if (!updatedCart) {
+      const cart = await cartModel.findByIdAndUpdate(
+        cartId,
+        { $push: { products: { id_prod: productId, quantity: quantity } } },
+        { new: true }
+      );
+      res.status(200).send(cart);
     } else {
-      cart.products.push({ id_prod: productId, quantity: quantity });
+      res.status(200).send(updatedCart);
     }
-    const mensaje = await cartModel.findByIdAndUpdate(cartId, cart);
-    res.status(200).send(mensaje);
   } catch (error) {
     res
       .status(500)
