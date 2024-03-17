@@ -21,7 +21,7 @@ const io = new Server(server);
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then((mensasje) => console.log(mensasje))
   .catch((error) => console.log(error));
