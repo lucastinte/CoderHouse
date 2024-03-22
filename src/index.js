@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import { __dirname } from "./path.js";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 const app = express();
 const PORT = 8080;
@@ -21,9 +22,9 @@ const io = new Server(server);
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
-  .then((mensasje) => console.log(mensasje))
+  .then((mensasje) => mensasje)
   .catch((error) => console.log(error));
 app.use(express.json());
 app.use(cookieParser("claveSecreta"));
@@ -31,10 +32,16 @@ app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 app.use("/", indexRouter);
+
 app.use(
   session({
     secret: "codersecret",
     resave: true,
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+      ttl: 60 * 60,
+    }),
     saveUninitialized: true,
   })
 );
@@ -54,6 +61,7 @@ app.get("/deleteCookie", (req, res) => {
   res.clearCookie("CookieCookie").send("Cookie Eliminada");
 });
 //ROUTES SESSIONS
+
 app.get("/session", (req, res) => {
   if (req.session.counter) {
     req.session.counter++;
@@ -68,9 +76,9 @@ app.post("/login", (req, res) => {
   if (email == "admin@admin.com" && password == "1234") {
     req.session.email = email;
     req.session.password = password;
-    res.send("login valido");
   }
-  res.send("login invalido");
+  console.log(req.session);
+  res.send("Login");
 });
 io.on("connection", (socket) => {
   console.log("Conexion con Socket.io");
