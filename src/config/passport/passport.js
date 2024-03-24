@@ -1,7 +1,7 @@
 import local from "passport-local";
 import passport from "passport";
-import { userModel } from "../../models/user";
-import { createHash, validatePassword } from "../../utils/bcrypt";
+import { userModel } from "../../models/user.js";
+import { createHash, validatePassword } from "../../utils/bcrypt.js";
 const localStrategy = local.Strategy;
 const initializePassport = () => {
   passport.use(
@@ -35,7 +35,7 @@ const initializePassport = () => {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user_id);
+    done(null, user._id);
   });
 
   passport.deserializeUser(async (id, done) => {

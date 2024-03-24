@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 const sessionRouter = Router();
 
-sessionRouter.post(
+sessionRouter.get(
   "/login",
   passport.authenticate("login"),
   async (req, res) => {
@@ -21,25 +21,28 @@ sessionRouter.post(
     }
   }
 );
-sessionRouter.post("/register", async (req, res) => {
-  try {
-    const { first_name, last_name, email, password, age } = req.body;
-    const findUser = await userModel.findOne({ email: email });
-    if (findUser) {
-      res.status(400).send("Correo ya utilizado");
-    } else {
-      await userModel.create({
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        age: age,
-        password: createHash(password),
-      });
-      res.status(200).send("Usuario creado");
-    }
-  } catch (e) {
-    res.status(500).send("Error al registrar user: ", e);
-  }
-});
+sessionRouter.post(
+  "/register",
+  passport.authenticate("register"),
+  async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(400).send("Usuario ya existente en la aplicacion");
+      }
 
+      res.status(200).send("Usuario creado correctamente");
+    } catch (e) {
+      res.status(500).send("Error al registrar usuario");
+    }
+  }
+);
+sessionRouter.get("/logout", (req, res) => {
+  req.session.destroy(function (e) {
+    if (e) {
+      console.log(e);
+    } else {
+      res.status(200).redirect("/");
+    }
+  });
+});
 export default sessionRouter;
