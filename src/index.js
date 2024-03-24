@@ -1,8 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
+import passport from "passport";
 import messageModel from "./models/messages.js";
 import indexRouter from "./routes/indexrouter.js";
 import cookieParser from "cookie-parser";
+import initializePassport from "./config/passport/passport.js";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import { __dirname } from "./path.js";
@@ -22,29 +24,35 @@ const io = new Server(server);
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
-  .then((mensasje) => mensasje)
-  .catch((error) => console.log(error));
+  .then(() => console.log("DB is connected"))
+  .catch((e) => console.log(e));
+
 app.use(express.json());
-app.use(cookieParser("claveSecreta"));
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", __dirname + "/views");
-app.use("/", indexRouter);
 
 app.use(
   session({
-    secret: "codersecret",
+    secret: "coderSecret",
     resave: true,
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       ttl: 60 * 60,
     }),
     saveUninitialized: true,
   })
 );
+app.use(cookieParser("claveSecreta"));
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", __dirname + "/views");
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/", indexRouter);
+
 //ROUTES COOKIES
 app.get("/setCookie", (req, res) => {
   res
