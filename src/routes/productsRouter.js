@@ -23,8 +23,11 @@ productsRouter.get("/", async (req, res) => {
       page: pag,
       sort: ordQuery,
     });
-    n;
-    res.status(200).send(prods);
+    const productos = prods.docs.map((producto) => producto.toObject());
+    res.status(200).render("templates/products", {
+      mostrarProductos: true,
+      productos,
+    });
   } catch (error) {
     res.status(500).render("templates/error", {
       error: error,

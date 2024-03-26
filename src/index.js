@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import passport from "passport";
+import GithubStrategy from "passport-github2";
 import messageModel from "./models/messages.js";
 import indexRouter from "./routes/indexrouter.js";
 import cookieParser from "cookie-parser";
@@ -19,12 +20,12 @@ const server = app.listen(PORT, () => {
   console.log(`Server on port ${PORT}`);
 });
 
-const io = new Server(server);
+// const io = new Server(server);
 
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:<pass>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => console.log("DB is connected"))
   .catch((e) => console.log(e));
@@ -37,7 +38,7 @@ app.use(
     resave: true,
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://lucasrtinte19:<password>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        "mongodb+srv://lucasrtinte19:<pass>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       ttl: 60 * 60,
     }),
     saveUninitialized: true,
@@ -88,16 +89,16 @@ app.post("/login", (req, res) => {
   console.log(req.session);
   res.send("Login");
 });
-io.on("connection", (socket) => {
-  console.log("Conexion con Socket.io");
+// io.on("connection", (socket) => {
+//   console.log("Conexion con Socket.io");
 
-  socket.on("mensaje", async (mensaje) => {
-    try {
-      await messageModel.create(mensaje);
-      const mensajes = await messageModel.find();
-      io.emit("mensajeLogs", mensajes);
-    } catch (error) {
-      io.emit("mensajeLogs", error);
-    }
-  });
-});
+//   socket.on("mensaje", async (mensaje) => {
+//     try {
+//       await messageModel.create(mensaje);
+//       const mensajes = await messageModel.find();
+//       io.emit("mensajeLogs", mensajes);
+//     } catch (error) {
+//       io.emit("mensajeLogs", error);
+//     }
+//   });
+// });

@@ -18,7 +18,11 @@ cartRouter.get("/:cid", async (req, res) => {
     const cart = await cartModel
       .findOne({ _id: cartId })
       .populate("products.id_prod");
-    res.status(200).send(cart);
+    const products = cart.products.map((product) => ({
+      title: product.id_prod.title,
+      quantity: product.quantity,
+    }));
+    res.render("templates/cart", { products });
   } catch (error) {
     res
       .status(500)
