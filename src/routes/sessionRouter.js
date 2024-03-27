@@ -36,15 +36,17 @@ sessionRouter.post(
     }
   }
 );
-sessionRouter.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] })
-);
+sessionRouter.get("/github", async (req, res, next) => {
+  await passport.authenticate("github", { scope: ["user:email"] })(
+    req,
+    res,
+    next
+  );
+});
 sessionRouter.get(
   "/githubSession",
   passport.authenticate("github"),
   async (req, res) => {
-    console.log(req);
     req.session.user = {
       email: req.user.email,
       first_name: req.user.name,
