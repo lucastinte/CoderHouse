@@ -25,7 +25,7 @@ const server = app.listen(PORT, () => {
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
   .connect(
-    "mongodb+srv://lucasrtinte19:<pass>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => console.log("DB is connected"))
   .catch((e) => console.log(e));
@@ -38,8 +38,9 @@ app.use(
     resave: true,
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://lucasrtinte19:<pass>@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        "mongodb+srv://lucasrtinte19:coderhouse@cluster0.1mnux6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       ttl: 60 * 60,
+      autoRemove: "interval",
     }),
     saveUninitialized: true,
   })

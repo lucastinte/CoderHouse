@@ -63,4 +63,10 @@ sessionRouter.get("/logout", (req, res) => {
     }
   });
 });
+sessionRouter.get(
+  "/testJWT",
+  passport.authenticate("jwt", { session: false }, (req, res) => {
+    res.send(req.user);
+  })
+);
 export default sessionRouter;
