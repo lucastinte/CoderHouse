@@ -66,13 +66,14 @@ const initializePassport = () => {
       }
     )
   );
+  /*
   passport.use(
     "github",
     new GithubStrategy(
       {
-        clientID: "Iv1.61c76e534853eba7",
-        clientSecret: "678210ca0d2f3a38b781057f6aa01f018ad9372a",
-        callbakckURL: "http://localhost:8080/api/session/githubSession",
+        clientID: "",
+        clientSecret: """,
+        callbakckURL: "",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -99,6 +100,7 @@ const initializePassport = () => {
       }
     )
   );
+  */
   passport.use("jwt", strategyJWT);
 };
 
