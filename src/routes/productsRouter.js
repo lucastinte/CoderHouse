@@ -1,28 +1,17 @@
 import { Router } from "express";
-import productModel from "../models/product.js";
+import {
+  getProducts,
+  getProduct,
+  createProduct,
+  updatedProduct,
+  deleteProduct,
+} from "../controllers/productController.js";
 const productsRouter = Router();
 
 productsRouter.get("/", async (req, res) => {
   try {
     const { limit, page, filter, ord } = req.query;
-    let metFilter;
-    const pag = page !== undefined ? page : 1;
-    const limi = limit !== undefined ? limit : 10;
-
-    if (filter == "true" || filter == "false") {
-      metFilter = "status";
-    } else {
-      if (filter !== undefined) metFilter = "category";
-    }
-
-    const query = metFilter != undefined ? { [metFilter]: filter } : {};
-    const ordQuery = ord !== undefined ? { price: ord } : {};
-
-    const prods = await productModel.paginate(query, {
-      limit: limi,
-      page: pag,
-      sort: ordQuery,
-    });
+    const prods = await getProducts(limit, page, filter, ord);
     const productos = prods.docs.map((producto) => producto.toObject());
     res.status(200).render("templates/products", {
       mostrarProductos: true,
@@ -37,8 +26,7 @@ productsRouter.get("/", async (req, res) => {
 
 productsRouter.get("/:pid", async (req, res) => {
   try {
-    const idProducto = req.params.pid;
-    const prod = await productModel.findById(idProducto);
+    const prod = await getProduct(idProducto);
     if (prod) {
       res.status(200).send(prod);
     } else {
@@ -52,8 +40,8 @@ productsRouter.get("/:pid", async (req, res) => {
 });
 productsRouter.post("/", async (req, res) => {
   try {
-    const newProduct = req.body;
-    const mensaje = await productModel.create(newProduct);
+    const product = req.body;
+    const mensaje = await createProduct(product);
     res.status(201).send(mensaje);
   } catch (error) {
     res
@@ -65,11 +53,8 @@ productsRouter.post("/", async (req, res) => {
 productsRouter.put("/:pid", async (req, res) => {
   try {
     const idProducto = req.params.pid;
-    const updatedProduct = req.body;
-    const prod = await productModel.findByIdAndUpdate(
-      idProducto,
-      updatedProduct
-    );
+    const upProduct = req.body;
+    const prod = await updatedProduct(idProducto, upProduct);
     res.status(200).send(prod);
   } catch (error) {
     res
@@ -80,7 +65,7 @@ productsRouter.put("/:pid", async (req, res) => {
 productsRouter.delete("/:pid", async (req, res) => {
   try {
     const idProducto = req.params.pid;
-    const mensaje = await productModel.findByIdAndDelete(idProducto);
+    const mensaje = await deleteProduct(idProducto);
     res.status(200).send(mensaje);
   } catch (error) {
     res
