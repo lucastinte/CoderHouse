@@ -2,6 +2,7 @@ import local from "passport-local";
 import passport from "passport";
 import GithubStrategy from "passport-github2";
 import { userModel } from "../../models/user.js";
+import { findUsers } from "../../controllers/sessionController.js";
 import { createHash, validatePassword } from "../../utils/bcrypt.js";
 import { strategyJWT } from "./strategies/jwtStrategy.js";
 const localStrategy = local.Strategy;
@@ -54,7 +55,7 @@ const initializePassport = () => {
       },
       async (username, password, done) => {
         try {
-          const user = await userModel.findOne({ email: username }).lean();
+          const user = await findUsers(username);
           if (user && validatePassword(password, user.password)) {
             return done(null, user);
           } else {

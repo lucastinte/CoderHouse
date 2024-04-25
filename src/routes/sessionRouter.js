@@ -54,6 +54,9 @@ sessionRouter.get(
     res.redirect("/");
   }
 );
+sessionRouter.get("/current", passport.authenticate("jwt"), (req, res) => {
+  res.status(200).send("Usuario logueado");
+});
 sessionRouter.get("/logout", (req, res) => {
   req.session.destroy(function (e) {
     if (e) {

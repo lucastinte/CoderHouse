@@ -6,16 +6,16 @@ import messageModel from "./models/messages.js";
 import indexRouter from "./routes/indexrouter.js";
 import cookieParser from "cookie-parser";
 import initializePassport from "./config/passport/passport.js";
+import { config } from "dotenv";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import { __dirname } from "./path.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import atlas_uri from "./atlas_uri.js";
+import varenv from "./dotenv.js";
 
 const app = express();
 const PORT = 8080;
-const uri = atlas_uri;
 //Server
 const server = app.listen(PORT, () => {
   console.log(`Server on port ${PORT}`);
@@ -25,7 +25,7 @@ const server = app.listen(PORT, () => {
 
 //Middlewares//coneccion a mongodbatlas no pasarle la contraseña al tutuor
 mongoose
-  .connect(uri)
+  .connect(varenv.mongo_url)
   .then(() => console.log("DB is connected"))
   .catch((e) => console.log(e));
 
@@ -33,17 +33,17 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: "coderSecret",
+    secret: varenv.session_secret,
     resave: true,
     store: MongoStore.create({
-      mongoUrl: uri,
+      mongoUrl: varenv.mongo_url,
       ttl: 60 * 60,
       autoRemove: "interval",
     }),
     saveUninitialized: true,
   })
 );
-app.use(cookieParser("claveSecreta"));
+app.use(cookieParser(varenv.cookies_secret));
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
