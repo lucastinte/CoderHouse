@@ -1,5 +1,5 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import { userModel } from "../../../models/user.js";
+import { userModel } from "../../../dao/models/user.js";
 import varenv from "../../../dotenv.js";
 
 const cookieExtractor = (req) => {
