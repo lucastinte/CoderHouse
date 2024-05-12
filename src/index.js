@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import passport from "passport";
 import GithubStrategy from "passport-github2";
-import messageModel from "./dao/models/messages.js";
+import messageModel from "./models/messages.js";
 import indexRouter from "./routes/indexrouter.js";
 import cookieParser from "cookie-parser";
 import initializePassport from "./config/passport/passport.js";

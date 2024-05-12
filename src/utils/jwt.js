@@ -7,7 +7,7 @@ export const generateToken = (user) => {
         2°: Clave privada del cifrado
         3°: Tiempo de expiracion
     */
-  const token = jwt.sign({ user }, varenv.jwt_secret, {
+  const token = jwt.sign({ user }, "coderhouse", {
     expiresIn: "12h",
   });
   return token;
@@ -15,13 +15,22 @@ export const generateToken = (user) => {
 //se genera el token
 console.log(
   generateToken({
-    _id: "65fe20bac08e9a187ecd376c",
-    first_name: "ana",
-    last_name: "anas",
+    _id: "66009af8095e061dff5e30d0",
+    first_name: "pepe",
+    last_name: "pepes",
     age: 33,
-    password: "$2b$15$/V4NXuXjuRhchY1vEnzfReXf9iNPKmyiZyzgseNrerEtcicxkMV9u",
-    email: "adminCoder@coder.com",
+    password: "$2b$15$aMYNrIc7800ItZTnn17iseoXJdBWE5xNRf1f2rsUHzbVqNNoCBN2C",
+    email: "pepe@pepe.com",
     rol: "User",
-    __v: 0,
   })
 );
+/*
+_id: "66009af8095e061dff5e30d0",
+first_name: "pepe",
+last_name: "pepes",
+age: 33,
+password: "$2b$15$aMYNrIc7800ItZTnn17iseoXJdBWE5xNRf1f2rsUHzbVqNNoCBN2C",
+email: "pepe@pepe.com",
+rol: "User",
+__v: 0,
+ */
