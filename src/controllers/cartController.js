@@ -1,5 +1,6 @@
 import cartModel from "../models/cart.js";
 import productModel from "../models/product.js";
+import ticketModel from "../models/ticket.js";
 export const getCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
@@ -66,7 +67,18 @@ export const createTicket = async (req, res) => {
         }
       });
       if (prodSinStock.length == 0) {
-        res.status(200).send("Compra completada exitosamente.");
+        const totalPrice = cart.products.reduce(
+          (a, b) => a.price * a.quantity + b.price * b.quantity,
+          0
+        );
+        const newTicket = await ticketModel.create({
+          code: crypto.randomUUID(),
+          purchaser: req.user.email,
+          amount: totalPrice,
+          products: cart.products,
+        });
+
+        res.status(200).send(newTicket);
       } else {
         res.status(400).json({
           message: "Algunos productos no están disponibles",
