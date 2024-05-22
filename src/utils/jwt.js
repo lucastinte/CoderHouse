@@ -7,7 +7,7 @@ export const generateToken = (user) => {
         2°: Clave privada del cifrado
         3°: Tiempo de expiracion
     */
-  const token = jwt.sign({ user }, "<pass>", {
+  const token = jwt.sign({ user }, "coderhouse", {
     expiresIn: "12h",
   });
   return token;
