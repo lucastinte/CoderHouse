@@ -59,36 +59,57 @@ export const createTicket = async (req, res) => {
     const cartId = req.params.cid;
     const cart = await cartModel.findById(cartId);
     const prodSinStock = [];
+    console.log(cart.products);
     if (cart) {
       cart.products.forEach(async (prod) => {
         let producto = await productModel.findById(prod.id_prod);
         if (producto.stock - prod.quantity < 0) {
-          prodSinStock.push(producto);
+          prodSinStock.push(producto.id);
         }
       });
+      console.log(prodSinStock);
+      console.log(cart.products);
       if (prodSinStock.length == 0) {
-        const totalPrice = cart.products.reduce(
-          (a, b) => a.price * a.quantity + b.price * b.quantity,
+        /*const totalPrice = cart.products.reduce(
+          (a, b) => a.id_prod.price * a.quantity + b.id_prod.price * b.quantity,
           0
-        );
+        );*/
+        const aux = [...cart.products];
         const newTicket = await ticketModel.create({
           code: crypto.randomUUID(),
           purchaser: req.user.email,
-          amount: totalPrice,
+          amount: 5,
           products: cart.products,
+        });
+        //descontar prods
+        cart.products.forEach(async (prod) => {
+          console.log(`foreacch ${prod}`);
+          /* await productModel.findByIdAndUpdate(prod.id_prod, {
+            stock: stock - prod.quantity,
+          });*/
+        });
+        await cartModel.findByIdAndUpdate(cartId, {
+          products: [],
         });
 
         res.status(200).send(newTicket);
       } else {
-        res.status(400).json({
-          message: "Algunos productos no están disponibles",
-          unavailableProducts: prodSinStock,
+        console.log(prodSinStock); //id1 id2 id3;
+        prodSinStock.forEach((prodId) => {
+          //[{id_prod,quiatity},{}]
+          cart.products = cart.products.filter((pro) => pro.id_prod !== prodId);
         });
+
+        await cartModel.findByIdAndUpdate(cartId, {
+          products: cart.products,
+        });
+        res.status(400).send(`productos sin stock: ${prodSinStock}`);
       }
     } else {
       res.status(404).send("Carrito no existe");
     }
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 };

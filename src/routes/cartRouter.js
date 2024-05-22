@@ -14,6 +14,10 @@ cartRouter.post(
   cartController.insertProductCart
 );
 
-cartRouter.post("/:cid/purchase", cartController.createTicket);
+cartRouter.get(
+  "/purchase/:cid",
+  passport.authenticate("jwt", { session: false }),
+  cartController.createTicket
+);
 
 export default cartRouter;

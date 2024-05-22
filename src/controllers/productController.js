@@ -42,8 +42,6 @@ export const getProduct = async (req, res) => {
   }
 };
 export const createProduct = async (req, res) => {
-  console.log(req.user);
-  console.log(req.user.rol);
   try {
     if (req.user.rol == "Admin") {
       const product = req.body;
@@ -79,7 +77,6 @@ export const updatedProduct = async (req, res) => {
 };
 export const deleteProduct = async (req, res) => {
   try {
-    console.log(req.user.rol);
     if (req.user.rol == "Admin") {
       const idProducto = req.params.pid;
       const mensaje = await productModel.findByIdAndDelete(idProducto);

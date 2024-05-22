@@ -85,7 +85,6 @@ app.post("/login", (req, res) => {
     req.session.email = email;
     req.session.password = password;
   }
-  console.log(req.session);
   res.send("Login");
 });
 // io.on("connection", (socket) => {
