@@ -54,7 +54,7 @@ const initializePassport = () => {
       },
       async (username, password, done) => {
         try {
-          const user = await findUsers(username);
+          const user = await userModel.findOne({ email: username }).lean();
           if (user && validatePassword(password, user.password)) {
             return done(null, user);
           } else {

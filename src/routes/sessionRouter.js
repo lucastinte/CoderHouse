@@ -32,4 +32,5 @@ sessionRouter.get(
   passport.authenticate("jwt", { session: false }),
   sessionController.testJWT
 );
+sessionRouter.post("/reset-password/:token", sessionController.changePassword);
 export default sessionRouter;

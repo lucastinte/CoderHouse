@@ -1,6 +1,6 @@
-import bcrypt, { compareSync } from "bcrypt";
-import varenv from "../dotenv.js";
+import bcrypt from "bcrypt";
+const salt = 10;
 export const createHash = (password) =>
-  bcrypt.hashSync(password, bcrypt.genSaltSync(varenv.salt));
+  bcrypt.hashSync(password, bcrypt.genSaltSync(salt));
 export const validatePassword = (passwordSend, passwordBdd) =>
   bcrypt.compareSync(passwordSend, passwordBdd);
