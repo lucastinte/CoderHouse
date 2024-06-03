@@ -74,6 +74,10 @@ export const createTicket = async (req, res) => {
           (a, b) => a.id_prod.price * a.quantity + b.id_prod.price * b.quantity,
           0
         );*/
+        if (req.user.rol === "premium") {
+          totalPrice *= 0.9;
+        }
+
         const aux = [...cart.products];
         const newTicket = await ticketModel.create({
           code: crypto.randomUUID(),

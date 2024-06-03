@@ -78,7 +78,7 @@ export const sendEmailPassword = async (req, res) => {
   try {
     if (user) {
       const token = jwt.sign({ userEmail: email }, "coderhouse", {
-        expiresIn: "12h",
+        expiresIn: "1h",
       });
       const resetLink = `http://localhost:8080/api/session/reset-password?token=${token}`;
       sendEmailChangePassword(email, resetLink);
@@ -88,6 +88,9 @@ export const sendEmailPassword = async (req, res) => {
     }
   } catch (e) {
     console.log(e);
+    if ((e.message = "jwt expired")) {
+      res.status(400).send("token expirado");
+    }
     res.status(500).send(e);
   }
 };
