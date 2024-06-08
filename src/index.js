@@ -13,7 +13,8 @@ import { __dirname } from "./path.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import varenv from "./dotenv.js";
-
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 const app = express();
 const PORT = 8080;
 //Server
@@ -43,6 +44,19 @@ app.use(
     saveUninitialized: true,
   })
 );
+const swaggerOptions = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "Documentacion de mi aplicacion ",
+      description: "Descripcion de documentacion",
+    },
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+
 app.use(cookieParser(varenv.cookies_secret));
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -100,3 +114,4 @@ app.post("/login", (req, res) => {
 //     }
 //   });
 // });
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
