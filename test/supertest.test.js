@@ -92,4 +92,55 @@ const requester = supertest("http://localhost:8080");
 //     expect(response.status).to.equal(200);
 //   });
 // });
-describe("Rutas de sesiones de usuarios (Register, Login y Current)", function () {});
+// describe("Rutas de carts", function () {
+//   const cartId = "666f16abf7ebb815f73b36f4";
+//   const productId = "65f41998758419b117b9f78d";
+//   //token con usuario de rol User
+//   const token =
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY2MDA5YWY4MDk1ZTA2MWRmZjVlMzBkMCIsImZpcnN0X25hbWUiOiJwZXBlIiwibGFzdF9uYW1lIjoicGVwZXMiLCJhZ2UiOjMzLCJwYXNzd29yZCI6IiQyYiQxNSRhTVlOckljNzgwMEl0WlRubjE3aXNlb1hKZEJXRTV4TlJmMWYycnNVSHpiVnFOTm9DQk4yQyIsImVtYWlsIjoicGVwZUBwZXBlLmNvbSIsInJvbCI6IlVzZXIifSwiaWF0IjoxNzE4NTYyNjY0LCJleHAiOjE3MTg2MDU4NjR9.TZZL_Hu-KfwPJYAtHEOEmH0-6C6N4W6PLUcbxbOGnt4";
+//    it("Debería crear un nuevo carrito", async function () {
+//   const response = await requester.post("/api/cart");
+//   expect(response.status).to.equal(201);
+//   expect(response.body).to.have.property("_id");
+// });
+// it("Debería permitir a un usuario con token agregar un producto al carrito", async function () {
+//   const response = await requester
+//     .post(`/api/cart/${cartId}/${productId}`)
+//     .set("Authorization", `Bearer ${token}`)
+//     .send({ quantity: 1 });
+
+//   expect(response.status).to.equal(200);
+// });
+//   it("Debería permitir a un usuario con token realizar una compra", async function () {
+//     const response = await requester
+//       .get(`/api/cart/purchase/${cartId}`)
+//       .set("Authorization", `Bearer ${token}`);
+
+//     expect(response.status).to.equal(200);
+//   });
+// });
+// describe("Rutas del CRUD de usuarios", function () {
+//   // it("Debería registrar un nuevo usuario", async function () {
+//   //   const newUser = {
+//   //     first_name: "John",
+//   //     last_name: "Doe",
+//   //     email: "johndoe@example.com",
+//   //     age: 30,
+//   //     password: "password123",
+//   //   };
+//   //   const response = await requester
+//   //     .post("/api/session/register")
+//   //     .send(newUser);
+//   //   expect(response.status).to.equal(200);
+//   // });
+//   // it("Debería permitir a un usuario iniciar sesión con credenciales correctas", async function () {
+//   //   const response = await requester
+//   //     .get("/api/session/login")
+//   //     .send({ email: "johndoe@example.com", password: "password123" });
+//   //   expect(response.status).to.equal(200);
+//   // });
+//   // it("No debería permitir acceso sin un token válido", async function () {
+//   //   const response = await requester.get("/api/session/current");
+//   //   expect(response.status).to.equal(401);
+//   // });
+// });
