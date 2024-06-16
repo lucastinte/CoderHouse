@@ -13,16 +13,16 @@ sessionRouter.post(
   passport.authenticate("register"),
   sessionController.register
 );
-sessionRouter.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] }),
-  async (req, res) => {}
-);
-sessionRouter.get(
-  "/githubSession",
-  passport.authenticate("github"),
-  sessionController.sessionGithub
-);
+// sessionRouter.get(
+//   "/github",
+//   passport.authenticate("github", { scope: ["user:email"] }),
+//   async (req, res) => {}
+// );
+// sessionRouter.get(
+//   "/githubSession",
+//   passport.authenticate("github"),
+//   sessionController.sessionGithub
+// );
 sessionRouter.get("/current", passport.authenticate("jwt"), (req, res) => {
   res.status(200).send("Usuario logueado");
 });
