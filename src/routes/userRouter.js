@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/userController.js";
+import { getUsers, sendDocuments } from "../controllers/userController.js";
 const userRouter = Router();
 
 userRouter.get("/", async (req, res) => {
@@ -10,5 +10,5 @@ userRouter.get("/", async (req, res) => {
     res.status(500).send("Error al consultar users:", e);
   }
 });
-
+userRouter.post("/:uid/documents", sendDocuments);
 export default userRouter;
