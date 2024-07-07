@@ -5,16 +5,22 @@ import { validatePassword, createHash } from "../utils/bcrypt.js";
 export const login = async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(401).send("usuario o contra no validos");
+      return res.status(401).send("Usuario o contraseña no válidos");
     }
     req.session.user = {
+      _id: req.user._id,
       email: req.user.email,
-      first_name: req.user.first_name,
+      rol: req.user.rol,
     };
+    console.log("Datos de la sesión:", req.session.user);
 
-    res.status(200).render("templates/products", { user: req.user });
+    if (req.session.user.rol === "Admin") {
+      return res.redirect("/api/users/admin");
+    } else {
+      return res.redirect("/api/products");
+    }
   } catch (error) {
-    return res.status(500).send(e);
+    return res.status(500).send("Error en el servidor");
   }
 };
 export const register = async (req, res) => {
@@ -30,7 +36,10 @@ export const register = async (req, res) => {
 };
 export const logout = async (req, res) => {
   const user = await userModel.findOne({ email: req.session.user.email });
-  user.last_connection = new Date();
+  if (user) {
+    user.last_connection = new Date();
+    await user.save(); // Guarda la fecha de la última conexión
+  }
 
   req.session.destroy(function (e) {
     if (e) {

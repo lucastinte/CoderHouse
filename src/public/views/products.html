@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+</head>
+
+<body>
+    <header>
+        <!-- Mostrar el nombre del usuario en sesión -->
+        <h1>Bienvenido, <span id="userName"></span></h1>
+        <nav>
+            <!-- Enlaces de navegación -->
+            <ul>
+                <li><a href="/logout">Cerrar sesión</a></li> <!-- Enlace para cerrar sesión -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Lista de productos -->
+        <section id="productList">
+            <!-- Aquí se cargarán dinámicamente los productos desde JavaScript -->
+        </section>
+    </main>
+
+    <footer>
+        <!-- Pie de página -->
+        <p>&copy; 2024 Mi Tienda</p>
+    </footer>
+
+    <!-- Script para cargar datos dinámicamente -->
+    <script>
+        // Función para obtener los productos y el nombre del usuario en sesión
+        async function fetchData() {
+            try {
+                // Obtener datos del usuario en sesión
+                const userResponse = await fetch('/api/users/session');
+                const userData = await userResponse.json();
+
+                // Mostrar el nombre del usuario en sesión
+                document.getElementById('userName').innerText = userData.email;
+
+                // Obtener datos de productos
+                const productsResponse = await fetch('/api/products');
+                const productsData = await productsResponse.json();
+
+                // Renderizar lista de productos
+                const productListElement = document.getElementById('productList');
+                productsData.docs.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.classList.add('product');
+                    productElement.innerHTML = `
+            <h2>${product.title}</h2>
+            <p>${product.description}</p>
+            <p>Precio: $${product.price}</p>
+            <button onclick="addToCart('${product._id}')">Agregar al carrito</button>
+          `;
+                    productListElement.appendChild(productElement);
+                });
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+            }
+        }
+
+        // Función para agregar productos al carrito
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: '${userData._id}', // Asegúrate de tener acceso a userData aquí
+                        product_id: productId,
+                        quantity: 1 // Cantidad por defecto, puede ser ajustada según tu lógica
+                    })
+                });
+                const data = await response.json();
+                console.log('Producto agregado al carrito:', data);
+                // Aquí podrías añadir lógica para actualizar la interfaz o mostrar un mensaje al usuario
+            } catch (error) {
+                console.error('Error al agregar al carrito:', error);
+            }
+        }
+
+        // Cargar datos al cargar la página
+        window.onload = fetchData;
+    </script>
+</body>
+
+</html>

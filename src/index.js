@@ -31,17 +31,18 @@ mongoose
   .catch((e) => console.log(e));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
     secret: varenv.session_secret,
-    resave: true,
+    resave: false,
+    saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: varenv.mongo_url,
       ttl: 60 * 60,
-      autoRemove: "interval",
+      autoRemove: "interval", // remover sesiones caducadas en intervalos
     }),
-    saveUninitialized: true,
   })
 );
 const swaggerOptions = {
@@ -96,9 +97,12 @@ app.get("/session", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   if (email == "admin@admin.com" && password == "1234") {
-    req.session.email = email;
-    req.session.password = password;
+    req.session.user = {
+      email: email,
+      rol: "Admin",
+    };
   }
+  console.log(req.session.user);
   res.send("Login");
 });
 // io.on("connection", (socket) => {
