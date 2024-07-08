@@ -16,9 +16,9 @@ export const login = async (req, res) => {
     console.log("Datos de la sesión:", req.session.user);
 
     if (req.session.user.rol === "Admin") {
-      return res.redirect("/api/users/admin");
+      return res.redirect("/admin");
     } else {
-      return res.redirect("/api/users/home");
+      return res.redirect("/home");
     }
   } catch (error) {
     return res.status(500).send("Error en el servidor");

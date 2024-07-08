@@ -1,19 +1,12 @@
 import { Router } from "express";
 import passport from "passport";
-import path from "path";
-import { __dirname } from "../path.js";
 import * as sessionController from "../controllers/sessionController.js";
 const sessionRouter = Router();
-sessionRouter.get("/viewlogin", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/views/login.html"));
-});
-sessionRouter.get("/viewregister", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/views/register.html"));
-});
+
 sessionRouter.post(
   "/login",
   passport.authenticate("login", {
-    failureRedirect: "/api/session/login",
+    failureRedirect: "/login",
   }),
   sessionController.login
 );

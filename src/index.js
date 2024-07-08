@@ -94,17 +94,7 @@ app.get("/session", (req, res) => {
     res.send("sos el primer user en ingresar a la page");
   }
 });
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  if (email == "admin@admin.com" && password == "1234") {
-    req.session.user = {
-      email: email,
-      rol: "Admin",
-    };
-  }
-  console.log(req.session.user);
-  res.send("Login");
-});
+
 // io.on("connection", (socket) => {
 //   console.log("Conexion con Socket.io");
 

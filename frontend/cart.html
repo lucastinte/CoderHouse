@@ -52,7 +52,7 @@
                 });
                 if (response.ok) {
                     alert('Compra finalizada correctamente');
-                    window.location.href = '/http://localhost:8080/api/user/home';
+                    window.location.href = '/home';
                 } else {
                     const errorMessage = await response.text();
                     alert(`Error: ${errorMessage}`);

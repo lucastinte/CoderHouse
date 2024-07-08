@@ -57,10 +57,8 @@ export const insertProductCart = async (req, res) => {
 export const createTicket = async (req, res) => {
   try {
     const cartId = req.params.cid;
-    console.log(`Cart ID received: ${cartId}`);
 
     const cart = await cartModel.findById(cartId).populate("products.id_prod");
-    console.log(`Cart found: ${cart}`);
     const prodSinStock = [];
 
     if (cart) {

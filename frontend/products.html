@@ -16,7 +16,7 @@
 
     <script>
         function goToCart() {
-            window.location.href = 'http://localhost:8080/api/users/cart';
+            window.location.href = 'http://localhost:8080/cart';
         }
         document.addEventListener('DOMContentLoaded', async function () {
             const sessionResponse = await fetch('http://localhost:8080/api/users/session');

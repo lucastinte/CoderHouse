@@ -1,7 +1,4 @@
 import { Router } from "express";
-import { isAdmin } from "../config/isAdmin.js";
-import path from "path";
-import { __dirname } from "../path.js";
 import {
   getUsers,
   sendDocuments,
@@ -9,7 +6,6 @@ import {
   deleteUser,
 } from "../controllers/userController.js";
 const userRouter = Router();
-userRouter.use("/admin", isAdmin);
 userRouter.get("/", async (req, res) => {
   try {
     const users = await getUsers();
@@ -29,17 +25,10 @@ userRouter.get("/session", (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 });
-userRouter.get("/home", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/views/products.html"));
-});
-userRouter.get("/cart", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/views/cart.html"));
-});
+
 userRouter.post("/:uid/documents", sendDocuments);
 
 userRouter.delete("/", deleteInactiveUsers);
-userRouter.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/views/admin.html"));
-});
+
 userRouter.delete("/admin/:uid", deleteUser);
 export default userRouter;
