@@ -1,94 +1,85 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Lista de Productos</title>
 </head>
 
 <body>
-    <header>
-        <!-- Mostrar el nombre del usuario en sesión -->
-        <h1>Bienvenido, <span id="userName"></span></h1>
-        <nav>
-            <!-- Enlaces de navegación -->
-            <ul>
-                <li><a href="/logout">Cerrar sesión</a></li> <!-- Enlace para cerrar sesión -->
-            </ul>
-        </nav>
-    </header>
+    <h1>Lista de Productos</h1>
+    <p id="user-info"></p>
+    <button onclick="goToCart()">Ver Carrito</button>
+    <div id="product-list">
+        <!-- Aquí se cargarán dinámicamente los productos desde JavaScript -->
+    </div>
 
-    <main>
-        <!-- Lista de productos -->
-        <section id="productList">
-            <!-- Aquí se cargarán dinámicamente los productos desde JavaScript -->
-        </section>
-    </main>
-
-    <footer>
-        <!-- Pie de página -->
-        <p>&copy; 2024 Mi Tienda</p>
-    </footer>
-
-    <!-- Script para cargar datos dinámicamente -->
     <script>
-        // Función para obtener los productos y el nombre del usuario en sesión
-        async function fetchData() {
-            try {
-                // Obtener datos del usuario en sesión
-                const userResponse = await fetch('/api/users/session');
-                const userData = await userResponse.json();
-
-                // Mostrar el nombre del usuario en sesión
-                document.getElementById('userName').innerText = userData.email;
-
-                // Obtener datos de productos
-                const productsResponse = await fetch('/api/products');
-                const productsData = await productsResponse.json();
-
-                // Renderizar lista de productos
-                const productListElement = document.getElementById('productList');
-                productsData.docs.forEach(product => {
-                    const productElement = document.createElement('div');
-                    productElement.classList.add('product');
-                    productElement.innerHTML = `
-            <h2>${product.title}</h2>
-            <p>${product.description}</p>
-            <p>Precio: $${product.price}</p>
-            <button onclick="addToCart('${product._id}')">Agregar al carrito</button>
-          `;
-                    productListElement.appendChild(productElement);
-                });
-            } catch (error) {
-                console.error('Error al cargar datos:', error);
-            }
+        function goToCart() {
+            window.location.href = 'http://localhost:8080/api/users/cart';
         }
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Obtener usuario en sesión
+            const sessionResponse = await fetch('http://localhost:8080/api/users/session');
+            const userSession = await sessionResponse.json();
 
-        // Función para agregar productos al carrito
-        async function addToCart(productId) {
-            try {
-                const response = await fetch('/api/cart/add', {
+            // Mostrar nombre del usuario en sesión
+            const userInfoElement = document.getElementById('user-info');
+            userInfoElement.textContent = `Usuario: ${userSession.email} | Carrito ID: ${userSession.cart_id._id}`;
+
+            // Fetch para obtener la lista de productos desde tu API
+            const response = await fetch('http://localhost:8080/api/products');
+            const products = await response.json();
+
+            // Función para renderizar los productos en la página
+            function renderProducts(products) {
+                const productList = document.getElementById('product-list');
+                products.docs.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.innerHTML = `
+                        <h2>${product.title}</h2>
+                        <p>Descripción: ${product.description}</p>
+                        <p>Precio: $${product.price}</p>
+                        <p>Stock: ${product.stock}</p>
+                        <input type="number" id="quantity-${product._id}" placeholder="Cantidad">
+                        <button onclick="addToCart('${userSession.cart_id}', '${product._id}')">Agregar al Carrito</button>
+                        <hr>
+                    `;
+                    productList.appendChild(productElement);
+                });
+            }
+
+            // Llamar a la función para renderizar los productos
+            renderProducts(products);
+
+            // Función para agregar producto al carrito
+            window.addToCart = async function (cartId, productId) {
+                const quantityInput = document.getElementById(`quantity-${productId}`);
+                const quantity = quantityInput.value;
+
+                if (!quantity || quantity <= 0) {
+                    alert('Por favor, ingresa una cantidad válida.');
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:8080/api/cart/${cartId}/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        user_id: '${userData._id}', // Asegúrate de tener acceso a userData aquí
-                        product_id: productId,
-                        quantity: 1 // Cantidad por defecto, puede ser ajustada según tu lógica
-                    })
+                    body: JSON.stringify({ quantity })
                 });
-                const data = await response.json();
-                console.log('Producto agregado al carrito:', data);
-                // Aquí podrías añadir lógica para actualizar la interfaz o mostrar un mensaje al usuario
-            } catch (error) {
-                console.error('Error al agregar al carrito:', error);
-            }
-        }
 
-        // Cargar datos al cargar la página
-        window.onload = fetchData;
+                if (response.ok) {
+                    alert('Producto agregado al carrito correctamente');
+                } else {
+                    const errorMessage = await response.text();
+                    alert(`Error: ${errorMessage}`);
+                }
+            }
+
+        });
     </script>
 </body>
 

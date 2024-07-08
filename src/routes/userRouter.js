@@ -33,7 +33,9 @@ userRouter.get("/session", (req, res) => {
 userRouter.get("/home", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/views/products.html"));
 });
-
+userRouter.get("/cart", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/views/cart.html"));
+});
 userRouter.post("/:uid/documents", sendDocuments);
 
 userRouter.delete("/", deleteInactiveUsers);

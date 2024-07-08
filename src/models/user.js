@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import cartModel from "./cart.js";
 
-const userShema = new Schema({
+const userSchema = new Schema({
   first_name: {
     type: String,
     required: true,
@@ -17,15 +17,17 @@ const userShema = new Schema({
     type: String,
     required: true,
   },
-
-  email: { type: String, unique: true, index: true },
-
+  email: {
+    type: String,
+    unique: true,
+    index: true,
+  },
   rol: {
     type: String,
     default: "User",
   },
   documents: {
-    type: Object,
+    type: Array,
     default: [],
   },
   last_connection: {
@@ -36,20 +38,24 @@ const userShema = new Schema({
     ref: "carts",
   },
 });
-userShema.pre("save", async function (next) {
-  try {
-    const newCart = await cartModel.create({ products: [] });
-    this.cart_id = newCart._id;
-  } catch (e) {
-    next(e);
+
+// Middleware para crear un carrito nuevo al registrar un nuevo usuario
+userSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    try {
+      const newCart = await cartModel.create({ products: [] });
+      this.cart_id = newCart._id;
+    } catch (e) {
+      return next(e);
+    }
   }
+  next();
 });
 
-userShema.pre("find", async function (next) {
-  try {
-    this.populate("cart_id");
-  } catch (e) {
-    next(e);
-  }
+// Middleware para poblar el carrito al buscar usuarios
+userSchema.pre(["find", "findOne"], function (next) {
+  this.populate("cart_id");
+  next();
 });
-export const userModel = model("users", userShema);
+
+export const userModel = model("users", userSchema);

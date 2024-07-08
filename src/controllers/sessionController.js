@@ -11,13 +11,14 @@ export const login = async (req, res) => {
       _id: req.user._id,
       email: req.user.email,
       rol: req.user.rol,
+      cart_id: req.user.cart_id,
     };
     console.log("Datos de la sesión:", req.session.user);
 
     if (req.session.user.rol === "Admin") {
       return res.redirect("/api/users/admin");
     } else {
-      return res.redirect("/api/products");
+      return res.redirect("/api/users/home");
     }
   } catch (error) {
     return res.status(500).send("Error en el servidor");

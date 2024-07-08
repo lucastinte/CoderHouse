@@ -4,7 +4,7 @@ import ticketModel from "../models/ticket.js";
 export const getCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
-    const cart = await cartModel.findOne({ _id: cartId });
+    const cart = await cartModel.findById(cartId).populate("products.id_prod");
     res.status(200).send(cart);
   } catch (error) {
     res
