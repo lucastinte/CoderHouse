@@ -12,7 +12,6 @@
     <p id="user-info"></p>
     <button onclick="goToCart()">Ver Carrito</button>
     <div id="product-list">
-        <!-- Aquí se cargarán dinámicamente los productos desde JavaScript -->
     </div>
 
     <script>
@@ -20,19 +19,15 @@
             window.location.href = 'http://localhost:8080/api/users/cart';
         }
         document.addEventListener('DOMContentLoaded', async function () {
-            // Obtener usuario en sesión
             const sessionResponse = await fetch('http://localhost:8080/api/users/session');
             const userSession = await sessionResponse.json();
 
-            // Mostrar nombre del usuario en sesión
             const userInfoElement = document.getElementById('user-info');
             userInfoElement.textContent = `Usuario: ${userSession.email} | Carrito ID: ${userSession.cart_id._id}`;
 
-            // Fetch para obtener la lista de productos desde tu API
             const response = await fetch('http://localhost:8080/api/products');
             const products = await response.json();
 
-            // Función para renderizar los productos en la página
             function renderProducts(products) {
                 const productList = document.getElementById('product-list');
                 products.docs.forEach(product => {
@@ -50,10 +45,8 @@
                 });
             }
 
-            // Llamar a la función para renderizar los productos
             renderProducts(products);
 
-            // Función para agregar producto al carrito
             window.addToCart = async function (cartId, productId) {
                 const quantityInput = document.getElementById(`quantity-${productId}`);
                 const quantity = quantityInput.value;
@@ -63,7 +56,7 @@
                     return;
                 }
 
-                const response = await fetch(`http://localhost:8080/api/cart/${cartId}/${productId}`, {
+                const response = await fetch(`http://localhost:8080/api/cart/${userSession.cart_id._id}/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

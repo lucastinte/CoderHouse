@@ -4,18 +4,16 @@ import path from "path";
 import { __dirname } from "../path.js";
 import * as sessionController from "../controllers/sessionController.js";
 const sessionRouter = Router();
-//ruta de vista
 sessionRouter.get("/viewlogin", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/views/login.html"));
 });
 sessionRouter.get("/viewregister", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/views/register.html"));
 });
-// Ruta para manejar el envío del formulario de inicio de sesión
 sessionRouter.post(
   "/login",
   passport.authenticate("login", {
-    failureRedirect: "/api/session/login", // Redirigir en caso de fallo
+    failureRedirect: "/api/session/login",
   }),
   sessionController.login
 );

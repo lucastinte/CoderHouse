@@ -1,4 +1,6 @@
+// ticket.js
 import { Schema, model } from "mongoose";
+import crypto from "crypto";
 
 const ticketSchema = new Schema({
   code: {
@@ -18,10 +20,29 @@ const ticketSchema = new Schema({
     required: true,
   },
   products: {
-    type: Object,
+    type: [
+      {
+        id_prod: {
+          type: Schema.Types.ObjectId,
+          ref: "products",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
 });
 
-const ticketModel = model("ticket", ticketSchema);
+ticketSchema.pre("save", function (next) {
+  if (!this.code) {
+    this.code = crypto.randomUUID();
+  }
+  next();
+});
 
-export default ticketModel;
+const Ticket = model("ticket", ticketSchema);
+
+export default Ticket;

@@ -29,7 +29,6 @@ userRouter.get("/session", (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 });
-// Ruta para mostrar la página principal (home)
 userRouter.get("/home", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/views/products.html"));
 });

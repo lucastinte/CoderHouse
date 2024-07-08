@@ -11,7 +11,6 @@
     <h1>Carrito de Compras</h1>
     <p id="user-info"></p>
     <div id="cart-products">
-        <!-- Aquí se cargarán dinámicamente los productos del carrito -->
     </div>
     <button id="finalize-purchase">Finalizar Compra</button>
 
@@ -20,19 +19,15 @@
             const urlParams = new URLSearchParams(window.location.search);
             const cartId = urlParams.get('cartId');
 
-            // Obtener usuario en sesión
             const sessionResponse = await fetch('http://localhost:8080/api/users/session');
             const userSession = await sessionResponse.json();
 
-            // Mostrar nombre del usuario en sesión
             const userInfoElement = document.getElementById('user-info');
             userInfoElement.textContent = `Usuario: ${userSession.email} | Carrito ID: ${userSession.cart_id._id}`;
 
-            // Fetch para obtener los productos del carrito
             const response = await fetch(`http://localhost:8080/api/cart/${userSession.cart_id._id}`);
             const cart = await response.json();
 
-            // Función para renderizar los productos del carrito en la página
             function renderCartProducts(cart) {
                 const cartProductsElement = document.getElementById('cart-products');
                 cartProductsElement.innerHTML = '';
@@ -49,24 +44,21 @@
                 });
             }
 
-            // Llamar a la función para renderizar los productos del carrito
             renderCartProducts(cart);
 
-            // Función para finalizar la compra y redirigir a la vista final
             async function finalizePurchase() {
-                const response = await fetch(`http://localhost:8080/api/cart/purchase/${cartId}`, {
-                    method: 'POST'
+                const response = await fetch(`http://localhost:8080/api/cart/purchase/${userSession.cart_id._id}`, {
+                    method: 'GET'
                 });
                 if (response.ok) {
                     alert('Compra finalizada correctamente');
-                    window.location.href = '/final';
+                    window.location.href = '/http://localhost:8080/api/user/home';
                 } else {
                     const errorMessage = await response.text();
                     alert(`Error: ${errorMessage}`);
                 }
             }
 
-            // Asignar la función de finalizar compra al botón
             document.getElementById('finalize-purchase').addEventListener('click', finalizePurchase);
         });
     </script>
